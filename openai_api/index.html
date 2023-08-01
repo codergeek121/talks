@@ -21,32 +21,18 @@
           <h3>An Introduction to the OpenAI API</h3>
 
           <aside class="notes">
-            Thema: OpenAI API
-            
-            OpenAI ist die Firma hinter ChatGPT, das hat bestimmt jetzt jeder schon mal gesehen
-            Gehe ich jetzt auch nicht weiter drauf ein. Kennt jmd das überhaupt nicht?
-
-            Als ich die Slides vorbereitet hab, hab ich mich gefragt wie man eigentlich
-            am besten anfängt.
-            (click)
           </aside>
         </section>
 
         <section>
           <img data-src="chatgpt_15_minutes.png">
           <aside class="notes">
-            Genau, effektiv hab ich ChatGPT gefragt.
-            Jetzt ist es so, dass ich selber ChatGPT gar nicht viel verwendet habe und
-            da gar nicht so genau up2date bin. Aber ich hab mich gefragt, wie würde man denn
-            ChatGPT selber bauen?
           </aside>
         </section>
 
         <section>
           <a href="https://platform.openai.com/docs/api-reference/chat">Completions API</a>
           <aside class="notes">
-            Klick auf Link, kurz anschauen.
-            Über den Curl Request sprechen
           </aside>
         </section>
 
@@ -60,7 +46,7 @@
                 model: "gpt-3.5-turbo-0613",
                 messages: [
                   {
-                    role: 'system',
+                    role: "system",
                     content: "You are a professional SEO consultant"
                   },
                   {
@@ -72,11 +58,6 @@
             )
             </code></pre>
           <aside class="notes">
-            Ruby Gem 'ruby-openai' loben. Codesamples sind damit gebaut.
-            API token auf der Website holen. Gibt kein guten Support für Staging/Prod envs.
-            Empfehlung ist wohl, mit +alias in der Mail anmelden.
-            Billing Limits aktivieren.
-            Empfehlung die ich bisher rausgefunden hab erwähn ich naccher noch ein paar.
           </aside>
         </section>
       
@@ -102,14 +83,6 @@
             )
             </code></pre>
           <aside class="notes">
-            Welches Model wird verwendet. Es gibt viele verschiedene models.
-            Zum Teil für verschiedene Use-Cases, zum Teil mit Unterschiedlichen Spezialisierungen.
-            Gehe ich nicht ins Detail, aber wenn man ein Feature baut, sollte man sich überlegen welches Model geeignet ist.
-            Unterschiedliche Preise, Geschwindigkeit beim Antworten generieren
-            Seid gestern GPT4, das soll bessere Qualität liefern, habs noch nicht getestet.
-
-            GPT-3-Turbo ist so das allerweltsmodel, mit dem man relative schnell relativ gute Antworten bekommt.
-            Komme noch darauf, was das 0613 bedeutet.
           </aside>
         </section>
 
@@ -135,18 +108,6 @@
             )
             </code></pre>
           <aside class="notes">
-            Das ist das erste "unique" feature der API. System Prompts.
-            Hier kann man der API sozusagen bisschen das Verhalten der KI steuern.
-
-            ChatGPT wird eine System Prompt haben wie: "Sei ein netter hilfreicher persönlicher Assistent"
-
-            Hier habe ich schon viel probiert und das ist meiner Meinung nach der größte Hebel.
-            Paar Beispiele:
-              * Antworte immer auf Deutsch
-              * Du bist ein Ruby Programmierer
-              * Formatiere deine Antworten in Markdown
-
-            Angeblich hört GPT4 noch stärker auf system prompts.
           </aside>
         </section>
 
@@ -173,52 +134,42 @@
             )
             </code></pre>
           <aside class="notes">
-            Das ist sozusagen die User Anfrage.
-            Wenn ihr jetzt ChatGPT selber bauen wolltet, wäre der Weg in diesem messages array immer die komplette unterhaltung zu speichern
-            und dann sind die antworten effektiv genauso wie bei ChatGPT.
           </aside>
         </section>
 
         <section>
-            <pre><code data-trim data-noescape>
+            <pre><code class="ruby" data-trim data-noescape>
               api_response.dig("choices", 0, "message")
 
-              # super detailed response
+              # long response string
               "Here are some seo recommendations...."
             </code></pre>
           <aside class="notes">
-            Wie in jeder API, hinter irgendeinem key ist dann die Antwort als String.
-
-            Jetzt komm ich zu einer Option, die ich klasse finde.
           </aside>
         </section>
 
         <section>
           <p>"Can you summarize https://rubyonrails.org?"</p>
           <aside class="notes">
-            Hier haben wir jetzt die ganzen von vorhin gewrappt und schöne System prompts gebaut.
-            Was ist hier die Antwort?
           </aside>
         </section>
 
         <section>
-            <p>I apologize, but I am an AI language model and I am not able to browse the internet or access specific websites. Therefore, I cannot provide a summary or description of the website rubyonrails.org</p>
+          <h2>😢</h2>
+            <p>"I apologize, but I am an AI language model and I am not able to browse the internet or access specific websites. Therefore, I cannot provide a summary or description of the website rubyonrails.org"</p>
             <aside class="notes">
-              Ich zeig euch jetzt ein Feature, das ich superkrass fande, und dass mich tatsächlich geflaht hat
             </aside>
         </section>
 
         <section>
           <a href="https://platform.openai.com/docs/api-reference/chat/create#chat/create-function_call">Function Calling</a> 
           <aside class="notes">
-            Ich zeig euch jetzt ein Feature, das ich superkrass fand.
-            Model GPT-3.5-turbo-0613 unterstützt function calling
            </aside>
         </section>
 
         <section>
           <p>Define a function call</p>
-          <pre><code data-trim data-noescape data-line-numbers="5-18">
+          <pre><code class="ruby" data-trim data-noescape data-line-numbers="5-18">
           api_response = client.chat(
             parameters: {
               model: "gpt-3.5-turbo-0613",
@@ -246,7 +197,7 @@
 
         <section>
           <p>Example</p>
-          <pre><code data-trim data-noescape>
+          <pre><code class="ruby" data-trim data-noescape>
             /**
              * Gets the content of a webpage
              */
@@ -258,7 +209,7 @@
 
         <section>
           <p>Pass function along with messages</p>
-          <pre><code data-trim data-noescape>
+          <pre><code class="ruby" data-trim data-noescape>
           api_response = client.chat(
             parameters: {
               model: "gpt-3.5-turbo-0613",
@@ -277,8 +228,8 @@
         </section>
 
         <section>
-          <p>Crawl the webpage webpage</p>
-          <pre><code data-trim data-noescape>
+          <p>Crawl the webpage</p>
+          <pre><code class="ruby" data-trim data-noescape>
             message = api_response.dig("choices", 0, "message")
 
             # "get_webpage_content"
@@ -296,13 +247,12 @@
 
         <section>
           <p>Pass the crawl result back to the API</p>
-          <pre><code data-trim data-noescape>
+          <pre><code class="ruby" data-trim data-noescape>
             client.chat(
               parameters: {
                 model: "gpt-3.5-turbo-0613",
                 functions: [ ... ]
                 messages: [
-                  ...
                   {
                     role: "user",
                     content: "Can you summarize https://rubyonrails.org?",
@@ -322,7 +272,8 @@
 
 
         <section>
-          <p>The content of https://rubyonrails.org ist about the framework...</p>
+          <h2>🥳</h2>
+          <p>"The content of https://rubyonrails.org ist about the framework Ruby on Rails. It was ..."</p>
           <aside class="notes">
           </aside>
         </section>
