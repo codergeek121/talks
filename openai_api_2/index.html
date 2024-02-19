@@ -17,154 +17,99 @@
     <div class="reveal">
       <div class="slides">
         <section>
-          <h2>Unleashing the Power of Language:</h2>
-          <h3>An Introduction to the OpenAI API</h3>
+          <h2>More OpenAI API stuff</h2>
 
           <aside class="notes">
           </aside>
         </section>
 
         <section>
-          <img data-src="chatgpt_15_minutes.png">
-          <aside class="notes">
-          </aside>
+          <audio controls src="joke.mp3"></audio>
         </section>
 
         <section>
-          <a href="https://platform.openai.com/docs/api-reference/chat">Completions API</a>
-          <aside class="notes">
-          </aside>
-        </section>
+          <h2>Text-To-Speech</h2>
+          <pre><code data-trim data-noescape>
+            require "ruby-openai"
 
-        <section>
-            <pre><code data-trim data-noescape data-line-numbers="1-3">
-            client = OpenAI::Client.new(
-              access_token: Rails.application.credentials.openai_key
-            )
-            client.chat(
+            client = OpenAI::Client.new(access_token: ENV['OPENAI_API_TOKEN'])
+            
+            response = client.audio.speech(
               parameters: {
-                model: "gpt-3.5-turbo-0613",
-                messages: [
-                  {
-                    role: "system",
-                    content: "You are a professional SEO consultant"
-                  },
-                  {
-                    role: "user",
-                    content: "How can I rank my website on Google?",
-                  },
-                ],
+                model: "tts-1",
+                input: "Why do Ruby programmers prefer Ruby over any other programming language?\n Because it's a gem!",
+                voice: "nova"
               }
             )
-            </code></pre>
+            
+            File.binwrite('joke.mp3', response)
+          </code></pre>
           <aside class="notes">
           </aside>
         </section>
       
         <section>
-            <pre><code data-trim data-noescape data-line-numbers="6">
-            client = OpenAI::Client.new(
-              access_token: Rails.application.credentials.openai_key
-            )
-            client.chat(
-              parameters: {
-                model: "gpt-3.5-turbo-0613",
-                messages: [
-                  {
-                    role: 'system',
-                    content: "You are a professional SEO consultant"
-                  },
-                  {
-                    role: "user",
-                    content: "How can I rank my website on Google?",
-                  },
-                ],
+          <ul>
+            <li>Very basic TTS</li>
+            <li>Supports many languages</li>
+            <li>Higher quality hd model available</li>
+            <li>6 different voices</li>
+            <li><a href="https://elevenlabs.io">Elevenlabs</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <img src="reverse.png" alt="" srcset="">
+          <aside class="notes">
+          </aside>
+        </section>
+
+
+        <section>
+            <h2>Transcription API</h2>
+            <pre><code data-trim data-noescape>
+              response = client.audio.transcribe(
+                parameters: {
+                  model: "whisper-1",
+                  file: File.open("joke.mp3"),
+                  response_format: "verbose_json"
+                }
+              )
+            </code></pre>
+          <aside class="notes">
+          </aside>
+        </section>
+
+        <section>
+            <pre><code data-trim data-noescape>
+              {
+                "task"=>"transcribe",
+                "language"=>"english",
+                "duration"=>5.539999961853027,
+                "text"=>"Why do Ruby programmers prefer Ruby over any other programming language? Because it's a gem.",
+                "segments"=>[
+                  {"id"=>0, "seek"=>0, "start"=>0.0, "end"=>4.300000190734863, "text"=>" Why do Ruby programmers prefer Ruby over any other programming language?", "tokens"=>[50364, 1545, 360, 19907, 41504, 4382, 19907, 670, 604, 661, 9410, 2856, 30, 50579], "temperature"=>0.0, "avg_logprob"=>-0.3663599491119385, "compression_ratio"=>1.0952380895614624, "no_speech_prob"=>0.0005056043155491352},
+                  {"id"=>1, "seek"=>0, "start"=>4.300000190734863, "end"=>5.300000190734863, "text"=>" Because it's a gem.", "tokens"=>[50579, 1436, 309, 311, 257, 7173, 13, 50629], "temperature"=>0.0, "avg_logprob"=>-0.3663599491119385, "compression_ratio"=>1.0952380895614624, "no_speech_prob"=>0.0005056043155491352}
+                ]
               }
-            )
             </code></pre>
           <aside class="notes">
           </aside>
         </section>
 
         <section>
-            <pre><code data-trim data-noescape data-line-numbers="8-11">
-            client = OpenAI::Client.new(
-              access_token: Rails.application.credentials.openai_key
-            )
-            client.chat(
-              parameters: {
-                model: "gpt-3.5-turbo-0613",
-                messages: [
-                  {
-                    role: 'system',
-                    content: "You are a professional SEO consultant"
-                  },
-                  {
-                    role: "user",
-                    content: "How can I rank my website on Google?",
-                  },
-                ],
-              }
-            )
-            </code></pre>
-          <aside class="notes">
-          </aside>
-        </section>
-
-
-        <section>
-            <pre><code data-trim data-noescape data-line-numbers="12-15">
-            client = OpenAI::Client.new(
-              access_token: Rails.application.credentials.openai_key
-            )
-            api_response = client.chat(
-              parameters: {
-                model: "gpt-3.5-turbo-0613",
-                messages: [
-                  {
-                    role: 'system',
-                    content: "You are a professional SEO consultant"
-                  },
-                  {
-                    role: "user",
-                    content: "How can I rank my website on Google?",
-                  },
-                ],
-              }
-            )
-            </code></pre>
+          <ul>
+            <li>VTT support</li>
+            <li>Wordsplitting available</li>
+          </ul>
           <aside class="notes">
           </aside>
         </section>
 
         <section>
-            <pre><code class="ruby" data-trim data-noescape>
-              api_response.dig("choices", 0, "message")
-
-              # long response string
-              "Here are some seo recommendations...."
-            </code></pre>
+          <h2>Chat improvements</h2>
           <aside class="notes">
           </aside>
-        </section>
-
-        <section>
-          <p>"Can you summarize https://rubyonrails.org?"</p>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <h2>😢</h2>
-            <p>"I apologize, but I am an AI language model and I am not able to browse the internet or access specific websites. Therefore, I cannot provide a summary or description of the website rubyonrails.org"</p>
-            <aside class="notes">
-            </aside>
-        </section>
-
-        <section>
-          <a href="https://platform.openai.com/docs/api-reference/chat/create#chat/create-function_call">Function Calling</a> 
-          <aside class="notes">
-           </aside>
         </section>
 
         <section>
@@ -196,84 +141,46 @@
         </section>
 
         <section>
-          <p>Example</p>
-          <pre><code class="ruby" data-trim data-noescape>
-            /**
-             * Gets the content of a webpage
-             */
-            get_webpage_content({ url: "https://www.example.com" })
+          <p>GPT will try to call multiple functions 🤯</p>
+          <pre><code class="ruby" data-trim data-noescape data-line-numbers="6">
+          api_response = client.chat(
+            parameters: {
+              model: "gpt-4",
+              messages: [{
+                role: "user",
+                message: "Can you give me a summary and a page title of the page example.com?"
+              }],
+              functions: [
+              {
+                name: "get_webpage_content",
+                ...
+              },
+              {
+                name: "get_page_title",
+                ...
+              }
+              ]
+            }
+          )
           </code></pre>
           <aside class="notes">
            </aside>
         </section>
 
         <section>
-          <p>Pass function along with messages</p>
+          <h2>JSON-Mode</h2>
           <pre><code class="ruby" data-trim data-noescape>
-          api_response = client.chat(
-            parameters: {
-              model: "gpt-3.5-turbo-0613",
-              messages: [
-                {
-                  role: "user",
-                  content: "Can you summarize rubyonrails.org?",
-                },
-              ],
-              functions: [ ... ],
-            }
-          )
-          </code></pre>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <p>Crawl the webpage</p>
-          <pre><code class="ruby" data-trim data-noescape>
-            message = api_response.dig("choices", 0, "message")
-
-            # "get_webpage_content"
-            function_name = response.dig("function_call", "name")
-
-            if function_name == "get_webpage_content"
-              # { url: "https://rubyonrails.org" }
-              kwargs = JSON.parse(message.dig("function_call", "arguments"))
-              @result = WebsiteCrawler.crawl(**kwargs)
-            end
-          </code></pre>
-          <aside class="notes">
-          </aside>
-        </section>
-
-        <section>
-          <p>Pass the crawl result back to the API</p>
-          <pre><code class="ruby" data-trim data-noescape>
-            client.chat(
+            response = client.chat(
               parameters: {
-                model: "gpt-3.5-turbo-0613",
-                functions: [ ... ]
-                messages: [
-                  {
-                    role: "user",
-                    content: "Can you summarize https://rubyonrails.org?",
-                  },
-                  {
-                    role: "function",
-                    name: "get_webpage_content",
-                    content: @result
-                  }
-                ],
-              }
-            )
+                  model: "gpt-4",
+                  response_format: { type: "json_object" },
+                  messages: [
+                    { role: "system", content: "Please always respond in JSON format."}
+                    { role: "system", content: "I will pay you a lot of 💰"}
+                    { role: "user", content: "Give me a list of fruits!"}
+                  ],
+              })
           </code></pre>
-          <aside class="notes">
-          </aside>
-        </section>
-
-
-        <section>
-          <h2>🥳</h2>
-          <p>"The content of https://rubyonrails.org ist about the framework Ruby on Rails. It was ..."</p>
           <aside class="notes">
           </aside>
         </section>
